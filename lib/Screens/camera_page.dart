@@ -1,9 +1,53 @@
+// import 'dart:html';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_camera/flutter_camera.dart';
 import 'package:med_critics/Models/image_process.dart';
-import 'dart:io';
 
-import 'package:med_critics/Screens/display_inference.dart';
+class CameraPage extends StatefulWidget {
+  const CameraPage({Key? key}) : super(key: key);
+
+  @override
+  _CameraPageState createState() => _CameraPageState();
+}
+
+class _CameraPageState extends State<CameraPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          height: 852,
+          width: 393,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment(0.39, 0.92),
+              end: Alignment(-0.39, -0.92),
+              colors: [Color(0xFFF7D5E5), Color(0x00FA99C8)],
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 400),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CameraPreview()));
+                  },
+                  child: const Text('Click here to take a picture'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class CameraPreview extends StatelessWidget {
   const CameraPreview({Key? key}) : super(key: key);
@@ -12,8 +56,7 @@ class CameraPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FlutterCamera(
-        color: Colors.black,
-        iconColor: Colors.white,
+        color: Colors.amber,
         onImageCaptured: (value) async {
           final path = value.path;
           print("::::::::::::::::::::::::::::::::: $path");
@@ -25,20 +68,20 @@ class CameraPreview extends StatelessWidget {
                     future: ImageProcess().imageProcess(path),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Container();
+                        return CircularProgressIndicator();
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else {
-                        final result = snapshot.data ?? '';
-                        if (result!=''){() {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DisplayInference(
-                                    path: path, result: result),
-                              ));
-                        };} // Using null-aware operator
-                        return const AlertDialog();
+                        final result =
+                            snapshot.data ?? ''; // Using null-aware operator
+                        return Scaffold(
+                          body: Column(
+                            children: [
+                              Image.file(File(path)),
+                              Text(result),
+                            ],
+                          ),
+                        );
                       }
                     },
                   );

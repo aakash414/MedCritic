@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:med_critics/Screens/camera_page.dart';
 import 'package:med_critics/Screens/display_inference.dart';
+import 'package:med_critics/Screens/home.dart';
 
 import 'Screens/login_page.dart';
 // import 'Screens/meta_mask_login_page.dart';
@@ -16,15 +17,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Med Critics',
-      initialRoute: '/camera',
+      initialRoute: '/home',
       routes: {
-        '/login': (context) =>  const LoginPage(),
-        '/camera': (context) => const CameraPreview(),
+        '/login': (context) => LoginPage(),
+        '/camera': (context) => const CameraPage(),
+        '/home': (context) => const HomePage()
+        // Routes.addChainRoute: (context) => const AddChainScreen(),
       },
-      home: const LoginPage(),
     );
   }
 }
