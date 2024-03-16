@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:frontendweb/Models/metamask.dart';
 import 'package:provider/provider.dart';
 
-
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(                                                  //Change the provider 
-      create: (context) => MetaMaskProvider()..init(),                              //create an instant 
+    return ChangeNotifierProvider(
+      //Change the provider
+      create: (context) => MetaMaskProvider()..init(), //create an instant
       builder: (context, child) {
         return Scaffold(
           backgroundColor: const Color(0xFF181818),
@@ -19,23 +19,26 @@ class LoginPage extends StatelessWidget {
               Center(
                 child: Consumer<MetaMaskProvider>(
                   builder: (context, provider, child) {
-                    late final String text;                                               //check the state and display it 
+                    late final String text; //check the state and display it
 
                     if (provider.isConnected && provider.isInOperatingChain) {
-                      text = 'Connected';                                                 //connected 
+                      text = 'Connectedto ${provider.currentAddress}'; //connected to the address
+                      
+                      Navigator.pushNamed(context, "/home"); //connected
                     } else if (provider.isConnected &&
                         !provider.isInOperatingChain) {
                       text =
-                          'Wrong chain. Please connect to ${MetaMaskProvider.operatingChain}';            //wrong chain, what chain it should be connected to 
+                          'Wrong chain. Please connect to ${MetaMaskProvider.operatingChain}'; //wrong chain, what chain it should be connected to
                     } else if (provider.isEnabled) {
                       return Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: [ 
+                        children: [
                           const Text('Click the button...'),
                           const SizedBox(height: 8),
                           CupertinoButton(
-                            onPressed: () =>
-                                context.read<MetaMaskProvider>().connect(),                               //call metamask on click
+                            onPressed: () => context
+                                .read<MetaMaskProvider>()
+                                .connect(), //call metamask on click
                             color: Colors.white,
                             padding: const EdgeInsets.all(0),
                             child: Row(
@@ -51,23 +54,22 @@ class LoginPage extends StatelessWidget {
                         ],
                       );
                     } else {
-                      text = 'Please use a Web3 supported browser.';                           //please use web3 supported browser
+                      text =
+                          'Please use a Web3 supported browser.'; //please use web3 supported browser
                     }
 
-                    return ShaderMask(                                                          // a little bit of styling for text
+                    return ShaderMask(
+                      // a little bit of styling for text
                       shaderCallback: (bounds) => const LinearGradient(
                         colors: [Colors.purple, Colors.blue, Colors.red],
                       ).createShader(bounds),
-                      child: Text(
-                        text,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                        )
-                        // style: Theme.of(context).textTheme.headline5,
-                      ),
+                      child: Text(text,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white)
+                          ),
                     );
                   },
                 ),

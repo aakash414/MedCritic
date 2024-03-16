@@ -7,8 +7,7 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SizedBox(
+    return SizedBox(
       height: 932,
       width: 430,
       child: Stack(
@@ -16,47 +15,90 @@ class Dashboard extends StatelessWidget {
           Container(
             color: const Color(0xFFA79F9F),
           ),
-          Column(
-            children: [
-              Container(
-                width: double.infinity,
+          Container( height: 100,
+          width: 430,
+          color: const Color(0xffD9D9D9),
+          ),
+          ListView(
+            children: const [
+              ContBox(
                 height: 160,
-                color: const Color(0xffD9D9D9),
-                
+                width: 430,
+                text: 'Hi There!',
               ),
-              const Gap(110),
+              Gap(110),
               Padding(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(9),
                 child: Row(
                   children: [
                     Column(
                       children: [
-                        Container(
-                          width: 182,
+                        ContBox(
                           height: 160,
-                          color: const Color(0xffD9D9D9),
+                          width: 182,
+                          text: 'Thyroid',
                         ),
                         Gap(20),
-                        Container(
-                          width: 182,
+                        ContBox(
                           height: 160,
-                          color: const Color(0xffD9D9D9),
+                          width: 182,
+                          text: 'Glucose',
                         ),
                       ],
                     ),
-                    const Gap(10),
-                    Container(
+                    Gap(10),
+                    ContBox(
+                      height: 350,
                       width: 182,
-                      height: 362,
-                      color: const Color(0xffD9D9D9),
+                      text: 'Blood Pressure',
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Row(
+                  children: [
+                    Text(
+                      'See More...',
+                      style: TextStyle(fontSize: 18),
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           )
         ],
       ),
-    ));
+    );
+  }
+}
+
+class ContBox extends StatelessWidget {
+  final double height;
+  final double width;
+  final String text;
+  const ContBox({super.key, this.height = 10, this.width = 10, this.text = ''});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        color: Color(0xffD9D9D9),
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 18,
+          ),
+        ),
+      ),
+    );
   }
 }
