@@ -4,10 +4,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_web3/flutter_web3.dart';
+// import 'package:flutter_web3/flutter_web3.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart' as http;
-
 
 class ContractInteractionPage extends StatefulWidget {
   const ContractInteractionPage({Key? key}) : super(key: key);
@@ -117,30 +116,63 @@ class _ContractInteractionPageState extends State<ContractInteractionPage> {
     );
   }
 
+  // Future<void> addUserToContract(
+  //     String name, int age, int height, int weight, String bloodGroup) async {
+  //   final contractFunction = _contract.function('addUser');
+  //   final result = await _client.sendTransaction(
+  //     _credentials,
+
+  //     // ...
+
+  //     // ...
+
+  //     web3dart.Transaction.callContract(
+  //       contract: _contract,
+  //       function: contractFunction,
+  //       parameters: [
+  //         name,
+  //         BigInt.from(age),
+  //         BigInt.from(height),
+  //         BigInt.from(weight),
+  //         bloodGroup,
+  //       ],
+  //     ),
+  //     chainId: 1, // Ethereum mainnet
+  //   );
+
+  //   // Handle transaction result
+  //   print('Transaction hash: ${result.transactionHash}');
+  // }
   Future<void> addUserToContract(
       String name, int age, int height, int weight, String bloodGroup) async {
     final contractFunction = _contract.function('addUser');
-    final result = await _client.sendTransaction(
-      _credentials,
+    final gasPrice = EtherAmount.inWei(
+        BigInt.from(10000000000)); // Replace with desired gas price
+    final gasLimit =
+        41000; // Replace with estimated gas limit for the transaction
 
-      // ...
-
-      web3dart.Transaction.callContract(
-        contract: _contract,
-        function: contractFunction,
-        parameters: [
-          name,
-          BigInt.from(age),
-          BigInt.from(height),
-          BigInt.from(weight),
-          bloodGroup,
-        ],
-      ),
-      chainId: 1, // Ethereum mainnet
+    final transaction = Transaction(
+      from: _credentials.address,
+      gasPrice: gasPrice,
+      maxGas: gasLimit,
+      maxPriorityFeePerGas:
+          null, // Optional, can be set for EIP-1559 transactions
+      nonce: await _client.getTransactionCount(_credentials.address),
+      data: contractFunction.encodeCall([
+        name,
+        BigInt.from(age),
+        BigInt.from(height),
+        BigInt.from(weight),
+        bloodGroup,
+      ]),
+      to: _contractAddr,
+      value: EtherAmount.zero(),
     );
 
+    final result = await _client.sendTransaction(_credentials, transaction);
+
     // Handle transaction result
-    print('Transaction hash: ${result.transactionHash}');
+    // print('Transaction hash: ${result.transactionHash}');
   }
 
   @override
