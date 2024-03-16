@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
+  String useraddress() {
+    return MetaMaskProvider().currentAddress;
+  }
 
   @override
   Widget build(BuildContext context) {

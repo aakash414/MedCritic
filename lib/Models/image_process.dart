@@ -1,34 +1,27 @@
-import 'dart:io';
+import 'dart:html';
 
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class ImageProcess {
   Future<String?> imageProcess(String path) async {
-    // final apiKey = Platform.environment['AIzaSyCWMrbbfq_WL3iWaB-74ak-LlhYYU1e7e8'];
-    const apiKey = 'AIzaSyCWMrbbfq_WL3iWaB-74ak-LlhYYU1e7e8';
-
-    // print('API_KEY: $apiKey');
-    if (apiKey == null) {
-      print('No \$API_KEY environment variable');
-      exit(1);
-    }
+    const apiKey = 'YOUR_API_KEY';
 
     final model = GenerativeModel(model: 'gemini-pro-vision', apiKey: apiKey);
 
     try {
-      final imageBytes = await File(path).readAsBytes();
+      final response = await HttpRequest.request(path, responseType: 'blob');
 
       final prompt = TextPart(
-          "Identify the object in the image and display only the name of the image in one word.");
-      final imagePart = DataPart('image/jpeg', imageBytes);
+          "Read the text from the image and check whether it is a lab test result of a medical checkup. If the image is a lab test result, extract the text from the image and display whether the patient has any result in short words after analyzing it. If the image is not a lab test result, display the message that the image is not a lab test result.");
+      final imagePart = DataPart('image/jpeg', response.response);
 
-      final response = await model.generateContent([
-        Content.multi([prompt, imagePart])
-      ]);
+      final content = Content.multi([prompt, imagePart]);
 
-      if (response != null && response.text != null) {
-        print(response.text);
-        return response.text;
+      final generatedContent = await model.generateContent([content]);
+
+      if (generatedContent != null && generatedContent.text != null) {
+        print(generatedContent.text);
+        return generatedContent.text;
       } else {
         print('No text response received.');
         return null;

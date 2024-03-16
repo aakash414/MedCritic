@@ -1,88 +1,74 @@
-// import 'dart:html';
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:flutter_camera/flutter_camera.dart';
-import 'package:frontendweb/Models/image_process.dart';
-class CameraPage extends StatefulWidget {
-  const CameraPage({Key? key}) : super(key: key);
 
+import 'package:flutter/material.dart';
+import 'package:frontendweb/Screens/inference.dart';
+import 'package:image_picker/image_picker.dart';
+
+
+class CameraPage extends StatefulWidget {
   @override
   _CameraPageState createState() => _CameraPageState();
 }
 
 class _CameraPageState extends State<CameraPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 852,
-      width: 393,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment(0.39, 0.92),
-          end: Alignment(-0.39, -0.92),
-          colors: [Color(0xFFF7D5E5), Color(0x00FA99C8)],
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 400),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CameraPreview()));
-              },
-              child: const Text('Click here to take a picture'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+  File? _imageFile;
 
-class CameraPreview extends StatelessWidget {
-  const CameraPreview({Key? key}) : super(key: key);
+  Future<void> _pickImageFromGallery() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      setState(() {
+        _imageFile = File(pickedImage.path);
+      });
+       Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => InferenceScreen(imagePath: File(pickedImage.path).path),
+        ),
+      );
+    }
+  }
+
+  Future<void> _takeImageFromCamera() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedImage != null) {
+      setState(() {
+        _imageFile = File(pickedImage.path);
+      });
+
+      // Redirect to the inference page
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => InferenceScreen(imagePath: File(pickedImage.path).path),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FlutterCamera(
-        color: Colors.amber,
-        onImageCaptured: (value) async {
-          final path = value.path;
-          print("::::::::::::::::::::::::::::::::: $path");
-          if (path.contains('.jpg')) {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return FutureBuilder<String?>(
-                    future: ImageProcess().imageProcess(path),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        final result =
-                            snapshot.data ?? ''; // Using null-aware operator
-                        return Scaffold(
-                          body: Column(
-                            children: [
-                              Image.file(File(path)),
-                              Text(result),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                  );
-                });
-          }
-        },
+      appBar: AppBar(
+        title: const Text('Camera Screen'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: _pickImageFromGallery,
+              child: const Text('Pick Image from Gallery'),
+            ),
+            ElevatedButton(
+              onPressed: _takeImageFromCamera,
+              child: const Text('Take Image from Camera'),
+            ),
+          ],
+        ),
       ),
     );
   }

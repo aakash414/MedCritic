@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       title: 'Med Critics',
-      initialRoute: '/input',
+      initialRoute: '/home',
       routes: {
         '/login': (context) => const LoginPage(),
         '/dashboard': (context) => const Dashboard(),
