@@ -1,6 +1,7 @@
 # frontendweb
 
-A new Flutter project.
+A new Flutter app  to help individuals understand their health status easily and make informed decisions. MedInsight  strives to give complete ownership of personal medical data to the user itself.
+
 
 ## Getting Started
 
