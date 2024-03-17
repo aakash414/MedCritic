@@ -37,13 +37,14 @@ class _CameraPageState extends State<CameraPage> {
     if (pickedImage != null) {
       setState(() {
         _imageFile = File(pickedImage.path);
+        
       });
 
       // Redirect to the inference page
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => InferenceScreen(imagePath: File(pickedImage.path).path),
+          builder: (context) => InferenceScreen(imagePath: File(pickedImage.path).path,)
         ),
       );
     }

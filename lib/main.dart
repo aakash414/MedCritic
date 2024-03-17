@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontendweb/Models/smartcontractinputdetails.dart';
 import 'package:frontendweb/Screens/dashboard.dart';
 import 'package:frontendweb/Screens/home_page.dart';
 import 'package:frontendweb/Screens/input_form.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         '/dashboard': (context) => const Dashboard(),
         '/home': (context) => const HomePage(),
         '/input': (context) => InputForm(),
+        '/smartcontract': (context) => const SmartContract(),
       },
     );
   }
